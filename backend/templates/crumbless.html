@@ -1,0 +1,55 @@
+<!doctype html>
+<title>Crumbless</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit&family=Montserrat&family=Open+Sans:wght@500&display=swap" rel="stylesheet">
+<body>
+    <div class="full-body-container">
+        <div class="top-text">
+            <h1>Crumbless</h1>
+            <div class="input-box" onclick="sendFocus()">
+                <img src="{{ url_for('static', filename='images/mag.png') }}" />
+                <input placeholder="Search for a restauraunt in Houston" id="filter-text-val" onkeyup="filterText()">
+            </div>
+            <select class="input-dropdown">
+              <option value="volvo">Volvo</option>
+              <option value="saab">Saab</option>
+              <option value="fiat">Fiat</option>
+              <option value="audi">Audi</option>
+            </select>
+        </div>
+        <div id="answer-box">
+
+        </div>
+    </div>
+
+    <script>
+
+        function answerBoxTemplate(title,titleDesc){
+            return `<div class=''>
+                <h3 class='episode-title'>${title}</h3>
+                <p class='episode-desc'>${titleDesc}</p>
+            </div>`
+        }
+
+        function sendFocus(){
+            document.getElementById('filter-text-val').focus()
+        }
+
+        function filterText(){
+            document.getElementById("answer-box").innerHTML = ""
+            console.log(document.getElementById("filter-text-val").value)
+            fetch("/episodes?" + new URLSearchParams({ title: document.getElementById("filter-text-val").value }).toString())
+            .then((response) => response.json())
+            .then((data) => data.forEach(row => {
+                
+                let tempDiv = document.createElement("div")
+                tempDiv.innerHTML = answerBoxTemplate(row.title,row.descr)
+                document.getElementById("answer-box").appendChild(tempDiv)
+            }));
+
+        }
+            
+    </script>
+</body>

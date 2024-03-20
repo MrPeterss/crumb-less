@@ -12,40 +12,11 @@
     flex-direction: column;
 }
 
-#google-c{
-    color:#4285F4;
-}
-
-#google-s{
-    color:#DB4437;
-}
-
-#google-4{
-    color:	#F4B400;
-}
-
-#google-3{
-    color:	#4285F4;
-}
-
-#google-0-1{
-    color:	#0F9D58;
-}
-
-#google-0-2{
-    color:#DB4437;
-}
-
-.google-colors{
+h1 {
     display: flex;
     align-items: center;
     font-size: 48px;
     font-family: 'Open Sans', sans-serif;
-}
-
-.google-colors h1{
-    margin-bottom: 0;
-    margin-right: 3px;
 }
 
 .input-box{
@@ -58,9 +29,13 @@
     width: 600px;
 }
 
-.input-box img{
+.input-box img {
     height: 20px;
     width:20px;
+}
+
+.input-dropdown {
+    border-radius: 100%;
 }
 
 .top-text{

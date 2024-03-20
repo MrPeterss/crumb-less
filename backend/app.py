@@ -35,7 +35,7 @@ def sql_search(episode):
 
 @app.route("/")
 def home():
-    return render_template('base.html',title="sample html")
+    return render_template('crumbless.html',title="crumbless home")
 
 @app.route("/episodes")
 def episodes_search():
