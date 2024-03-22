@@ -18,3 +18,5 @@ build/
 *.egg-info/
 helpers/*
 crumb-less
+
+*.sql
