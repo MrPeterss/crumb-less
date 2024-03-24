@@ -2,6 +2,8 @@ import json
 import os
 from flask import Flask, render_template, request
 from flask_cors import CORS
+from helpers.models.review import Review
+from helpers.models.similarity import Similarity
 from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
 
 # ROOT_PATH for linking with all your files.
@@ -24,6 +26,11 @@ mysql_engine.load_file_into_db()
 
 app = Flask(__name__)
 CORS(app)
+
+reviews_sql_query = f"""SELECT * FROM reviews"""
+reviews_data = mysql_engine.query_selector(reviews_sql_query)
+reviews = [Review(row[0], row[1], row[2], row[3], row[4], row[5]) for row in reviews_data]
+sim = Similarity(reviews, [])
 
 # Sample search, the LIKE operator in this case is hard-coded,
 # but if you decide to use SQLAlchemy ORM framework,
@@ -70,6 +77,10 @@ def home():
 def businesses_search():
     text = request.args.get("title")
     return sql_search(text)
+
+@app.route("/review/test/<string:query>")
+def review_test(query):
+    return json.dumps(sim.text_mining(query))
 
 
 if 'DB_NAME' not in os.environ:
