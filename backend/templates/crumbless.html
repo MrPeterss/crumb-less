@@ -56,7 +56,7 @@
                 .then((response) => response.json())
                 .then((data) => data.forEach(row => {
                     let tempDiv = document.createElement("div")
-                    tempDiv.innerHTML = answerBoxTemplate(row.name, row.address, row.categories, row.postal_code, row.stars)
+                    tempDiv.innerHTML = answerBoxTemplate(row.name, row.address, row.stars, row.categories, row.postal_code)
                     document.getElementById("answer-box").appendChild(tempDiv)
                 }));
         }
