@@ -12,7 +12,8 @@
             <h1>Crumbless</h1>
             <div class="input-box" onclick="sendFocus()">
                 <img src="{{ url_for('static', filename='images/mag.png') }}" />
-                <input placeholder="Search for your cravings" id="filter-text-val" onkeyup="filterText()" onkeydown="checkEnter(event)">
+                <input placeholder="Search for your cravings" id="filter-text-val" onkeyup="filterText()"
+                    onkeydown="checkEnter(event)">
             </div>
         </div>
         <div id="answer-box">
@@ -22,10 +23,20 @@
 
     <script>
 
-        function answerBoxTemplate(name, address) {
-            return `<div class=''>
-                <h3 class='episode-title'>${name}</h3>
-                <p class='episode-desc'>${address}</p>
+        function answerBoxTemplate(name, address, stars, categories, postal_code) {
+            const roundedPC = Math.round(Number(postal_code)).toString();
+            var cat = categories.replace(/^"(.*)"$/, '$1');
+            cat_array = cat.split(",")
+            const i = cat.indexOf("Restaurants")
+            if (i !== -1) {
+                cat_array.splice(i, 1)
+            }
+            cat = cat_array.join(",")
+            return `<div class=''style='border: 1px solid black; padding: 10px;margin-bottom: 20px;border-radius: 5px;'>
+                <h3 class='restaurant-name'>${name}</h3>
+                <p class='restaurant-desc'><strong>Address: </strong> ${address}, Tucson, AZ, ${roundedPC}</p>
+                <p class='restaurant-desc'><strong>Average Rating: </strong>${stars}/5</p>
+                <p class='restaurant-desc'><strong>Common Words to Describe the Restaurant: </strong> ${cat}</p>
             </div>`
         }
 
@@ -45,7 +56,7 @@
                 .then((response) => response.json())
                 .then((data) => data.forEach(row => {
                     let tempDiv = document.createElement("div")
-                    tempDiv.innerHTML = answerBoxTemplate(row.name, row.address)
+                    tempDiv.innerHTML = answerBoxTemplate(row.name, row.address, row.categories, row.postal_code, row.stars)
                     document.getElementById("answer-box").appendChild(tempDiv)
                 }));
         }
