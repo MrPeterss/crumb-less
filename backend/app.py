@@ -2,6 +2,7 @@ import json
 import os
 from flask import Flask, render_template, request
 from flask_cors import CORS
+from helpers.models.business import Business
 from helpers.models.review import Review
 from helpers.models.similarity import Similarity
 from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
@@ -29,8 +30,17 @@ CORS(app)
 
 reviews_sql_query = f"""SELECT * FROM reviews"""
 reviews_data = mysql_engine.query_selector(reviews_sql_query)
-reviews = [Review(row[0], row[1], row[2], row[3], row[4], row[5]) for row in reviews_data]
+reviews = [Review(row[0], row[1], row[2], row[3], row[4], row[5])
+           for row in reviews_data]
 sim = Similarity(reviews, [])
+
+businesses_sql_query = f"""SELECT * FROM businesses"""
+businesses_data = mysql_engine.query_selector(businesses_sql_query)
+businesses = {}
+for row in businesses_data:
+    businesses[row[0]] = Business(row[0], row[1], row[2], row[3], row[4],
+                                  row[5], row[6], row[7], row[8], row[9], row[10], row[11])
+
 
 # Sample search, the LIKE operator in this case is hard-coded,
 # but if you decide to use SQLAlchemy ORM framework,
@@ -49,6 +59,16 @@ def sql_search(business):
 def tok_categories(categories):
     # returns a set of tokens
     return
+
+
+def get_businesses_by_id(business_map):
+    res = []
+    for id, _ in enumerate(business_map):
+        if len(res) >= 10:
+            break
+        res.append(businesses[id])
+    return res
+
 
 # returns businesses matching the cuisine part of the query (maybe we can also
 # define a query object so we can keep passing the query into helpers)
@@ -78,9 +98,38 @@ def businesses_search():
     text = request.args.get("title")
     return sql_search(text)
 
+
 @app.route("/review/test/<string:query>")
 def review_test(query):
-    return json.dumps(sim.text_mining(query))
+    # return json.dumps(get_businesses_by_id(sim.text_mining(query)))
+    business_map = sim.text_mining(query)
+    # return json.dumps(business_map)
+    # for key in business_map:
+    #     if len(res) >= 10:
+    #         break
+    #     query_sql = f"""SELECT * FROM businesses WHERE id in '%%{business_map.keys()[:10]}%%'"""
+    #     keys = ['id', 'name', 'address', 'city', 'state', 'postal_code', 'latitude',
+    #             'longitude', 'stars', 'review_count', 'categories', 'hours']
+    #     data = mysql_engine.query_selector(query_sql)
+    #     print(type(data))
+    #     res.append(dict(zip(keys, i)) for i in data)
+
+    query_sql = f"""SELECT * FROM businesses WHERE id IN {tuple(list(business_map.keys())[:10])}"""
+    keys = ['id', 'name', 'address', 'city', 'state', 'postal_code', 'latitude',
+            'longitude', 'stars', 'review_count', 'categories', 'hours']
+    data = mysql_engine.query_selector(query_sql)
+    return json.dumps([dict(zip(keys, i)) for i in data])
+
+
+@app.route("/reviewsearch")
+def review_textmine():
+    query = request.args.get("title")
+    business_map = sim.text_mining(query)
+    query_sql = f"""SELECT * FROM businesses WHERE id IN {tuple(list(business_map.keys())[:10])}"""
+    keys = ['id', 'name', 'address', 'city', 'state', 'postal_code', 'latitude',
+            'longitude', 'stars', 'review_count', 'categories', 'hours']
+    data = mysql_engine.query_selector(query_sql)
+    return json.dumps([dict(zip(keys, i)) for i in data])
 
 
 if 'DB_NAME' not in os.environ:

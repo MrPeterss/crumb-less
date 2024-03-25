@@ -3,14 +3,16 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Kanit&family=Montserrat&family=Open+Sans:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit&family=Montserrat&family=Open+Sans:wght@500&display=swap"
+    rel="stylesheet">
+
 <body>
     <div class="full-body-container">
         <div class="top-text">
             <h1>Crumbless</h1>
             <div class="input-box" onclick="sendFocus()">
                 <img src="{{ url_for('static', filename='images/mag.png') }}" />
-                <input placeholder="Search for a restauraunt in Tucson" id="filter-text-val" onkeyup="filterText()">
+                <input placeholder="Search for your cravings" id="filter-text-val" onkeydown="checkEnter(event)">
             </div>
         </div>
         <div id="answer-box">
@@ -20,27 +22,33 @@
 
     <script>
 
-        function answerBoxTemplate(name,address){
+        function answerBoxTemplate(name, address) {
             return `<div class=''>
                 <h3 class='episode-title'>${name}</h3>
                 <p class='episode-desc'>${address}</p>
             </div>`
         }
 
-        function sendFocus(){
+        function sendFocus() {
             document.getElementById('filter-text-val').focus()
         }
 
-        function filterText(){
-            document.getElementById("answer-box").innerHTML = ""
-            fetch("/businesses/search?" + new URLSearchParams({ title: document.getElementById("filter-text-val").value }).toString())
-            .then((response) => response.json())
-            .then((data) => data.forEach(row => {
-                let tempDiv = document.createElement("div")
-                tempDiv.innerHTML = answerBoxTemplate(row.name,row.address)
-                document.getElementById("answer-box").appendChild(tempDiv)
-            }));
+        function checkEnter(event) {
+            if (event.keyCode === 13) {
+                filterText()
+            }
         }
-            
+
+        function filterText() {
+            document.getElementById("answer-box").innerHTML = ""
+            fetch("/reviewsearch?" + new URLSearchParams({ title: document.getElementById("filter-text-val").value }).toString())
+                .then((response) => response.json())
+                .then((data) => data.forEach(row => {
+                    let tempDiv = document.createElement("div")
+                    tempDiv.innerHTML = answerBoxTemplate(row.name, row.address)
+                    document.getElementById("answer-box").appendChild(tempDiv)
+                }));
+        }
+
     </script>
 </body>
