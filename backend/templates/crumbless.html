@@ -12,7 +12,7 @@
             <h1>Crumbless</h1>
             <div class="input-box" onclick="sendFocus()">
                 <img src="{{ url_for('static', filename='images/mag.png') }}" />
-                <input placeholder="Search for your cravings" id="filter-text-val" onkeydown="checkEnter(event)">
+                <input placeholder="Search for your cravings" id="filter-text-val" onkeyup="filterText()" onkeydown="checkEnter(event)">
             </div>
         </div>
         <div id="answer-box">
