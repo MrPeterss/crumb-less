@@ -2,9 +2,9 @@ import json
 import os
 from flask import Flask, render_template, request
 from flask_cors import CORS
-from helpers.models.business import Business
-from helpers.models.review import Review
-from helpers.models.similarity import Similarity
+from models.business import Business
+from models.review import Review
+from models.similarity import Similarity
 from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
 
 # ROOT_PATH for linking with all your files.
