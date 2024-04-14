@@ -9,57 +9,115 @@
 <body>
     <div class="full-body-container">
         <div class="top-text">
-            <h1>Crumbless</h1>
+            <h1>Crumb-less</h1>
+
             <div class="input-box" onclick="sendFocus()">
                 <img src="{{ url_for('static', filename='images/mag.png') }}" />
-                <input placeholder="Search for your cravings" id="filter-text-val" onkeyup="filterText()"
+                <input placeholder="Search for your Tucson cravings" id="filter-text-val" onkeyup="filterText()"
                     onkeydown="checkEnter(event)">
             </div>
+            <div class="dropdown-container">
+                <select class="dropdown" name="cuisine" id="cuisine">
+                    <option value="" disabled selected>Select Cuisine</option>
+                    <option value="American">American</option>
+                    <option value="Chinese">Chinese</option>
+                    <option value="French">French</option>
+                    <option value="Italian">Italian</option>
+                    <option value="Japanese">Japanese</option>
+                    <option value="Korean">Korean</option>
+                    <option value="Mexican">Mexican</option>
+                    <option value="Mediterranean">Mediterranean</option>
+
+
+                </select>
+                <select class="dropdown" name="budget" id="budget">
+                    <option value="" disabled selected>Select Budget</option>
+                    <option value="$">$</option>
+                    <option value="$$">$$</option>
+                    <option value="$$">$$$</option>
+                </select>
+                <select class="dropdown" name="diet" id="diet">
+                    <option value="" disabled selected>Select Dietary Restriction</option>
+                    <option value="Gluten-Free">Gluten-Free</option>
+                    <option value="Keto">Keto</option>
+                    <option value="Paleo">Paleo</option>
+                    <option value="Pescetarian">Pescaterian</option>
+                    <option value="Vegetarian">Vegetarian</option>
+                    <option value="Vegan">Vegan</option>
+                </select>
+                <form id="submit" action="/submit-form" method="post">
+                    <input type="submit" value="Submit" class="submit-button">
+                </form>
+            </div>
+            <div id="answer-box">
+
+            </div>
         </div>
-        <div id="answer-box">
 
-        </div>
-    </div>
+        <script>
 
-    <script>
+            document.getElementById("submit").addEventListener("submit", function (event) {
+                event.preventDefault(); // Prevent the form from submitting
+                var cuisine_dropdown = document.getElementById("cuisine");
+                var budget_dropdown = document.getElementById("budget");
+                var diet_dropdown = document.getElementById("diet");
+                var cuisine = cuisine_dropdown.value
+                var budget = budget_dropdown.value
+                var diet = diet_dropdown.value
+                if (cuisine == "") {
+                    cuisine = "NONE"
+                }
+                if (budget == "") {
+                    budget = "NONE"
+                }
+                if (diet == "") {
+                    diet = "NONE"
+                }
+                submitInputs(cuisine, budget, diet);
+            });
 
-        function answerBoxTemplate(name, address, stars, categories, postal_code) {
-            const roundedPC = Math.round(Number(postal_code)).toString();
-            const cat = categories.replace(/^"(.*)"$/, '$1');
-            cat_array = cat.split(",")
-            const i = Math.max(cat_array.indexOf(" Restaurants"), cat_array.indexOf("Restaurants"))
-            if (i != -1) {
-                cat_array.splice(i, 1)
+            function submitInputs(cuisine, budget, diet) {
+                alert(cuisine + " " + budget + " " + diet);
             }
-            cat1 = cat_array.join(",")
-            return `<div class=''style='border: 1px solid black; padding: 10px;margin-bottom: 20px;border-radius: 5px;'>
+
+            function answerBoxTemplate(name, address, stars, categories, postal_code) {
+                const roundedPC = Math.round(Number(postal_code)).toString();
+                const cat = categories.replace(/^"(.*)"$/, '$1');
+                cat_array = cat.split(",")
+                const i = Math.max(cat_array.indexOf(" Restaurants"), cat_array.indexOf("Restaurants"))
+                if (i != -1) {
+                    cat_array.splice(i, 1)
+                }
+                cat1 = cat_array.join(",")
+                //`<div class=''style='border: 1px solid black; padding: 10px;margin-bottom: 20px;border-radius: 5px;'>
+                return `<div class = "restaurant-card">
                 <h3 class='restaurant-name'>${name}</h3>
                 <p class='restaurant-desc'><strong>Address: </strong> ${address}, Tucson, AZ, ${roundedPC}</p>
                 <p class='restaurant-desc'><strong>Average Rating: </strong>${stars}/5</p>
                 <p class='restaurant-desc'><strong>Common Words to Describe the Restaurant: </strong> ${cat1}</p>
             </div>`
-        }
-
-        function sendFocus() {
-            document.getElementById('filter-text-val').focus()
-        }
-
-        function checkEnter(event) {
-            if (event.keyCode === 13) {
-                filterText()
             }
-        }
 
-        function filterText() {
-            document.getElementById("answer-box").innerHTML = ""
-            fetch("/reviewsearch?" + new URLSearchParams({ title: document.getElementById("filter-text-val").value }).toString())
-                .then((response) => response.json())
-                .then((data) => data.forEach(row => {
-                    let tempDiv = document.createElement("div")
-                    tempDiv.innerHTML = answerBoxTemplate(row.name, row.address, row.stars, row.categories, row.postal_code)
-                    document.getElementById("answer-box").appendChild(tempDiv)
-                }));
-        }
+            function sendFocus() {
+                document.getElementById('filter-text-val').focus()
+            }
 
-    </script>
+            function checkEnter(event) {
+                if (event.keyCode === 13) {
+                    filterText()
+                }
+            }
+
+            function filterText() {
+                document.getElementById("answer-box").innerHTML = ""
+                fetch("/reviewsearch?" + new URLSearchParams({ title: document.getElementById("filter-text-val").value }).toString())
+                    .then((response) => response.json())
+                    .then((data) => data.forEach(row => {
+                        let tempDiv = document.createElement("div")
+                        tempDiv.innerHTML = answerBoxTemplate(row.name, row.address, row.stars, row.categories, row.postal_code)
+                        document.getElementById("answer-box").appendChild(tempDiv)
+                    }));
+            }
+
+        </script>
 </body>
