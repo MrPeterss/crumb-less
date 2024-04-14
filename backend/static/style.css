@@ -85,7 +85,6 @@ select.dropdown option {
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: fixed;
 }
 
 .input-box input {
