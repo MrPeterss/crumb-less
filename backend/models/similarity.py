@@ -21,7 +21,7 @@ class Similarity:
         # normalize the rows
         self.docs_compressed_normed = normalize(docs_compressed)
 
-    def text_mining(self, query, cuisinelist):
+    def text_mining(self, query, valid_businesses):
         query_tfidf = self.tfidf_vectorizer.transform([query]).toarray()
         query_vec = normalize(
             np.dot(query_tfidf, self.words_compressed)).squeeze()
@@ -37,8 +37,8 @@ class Similarity:
         # order by similarity
         business_map = {k: v for k, v in sorted(
             business_map.items(), key=lambda item: item[1], reverse=True)}
-        if cuisinelist is None:
+        if valid_businesses is None:
             return business_map
         cuisine_businesses_map = {
-            k: v for k, v in business_map.items() if k in cuisinelist}
+            k: v for k, v in business_map.items() if k in valid_businesses}
         return cuisine_businesses_map
