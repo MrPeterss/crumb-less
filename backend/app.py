@@ -15,7 +15,7 @@ os.environ['ROOT_PATH'] = os.path.abspath(os.path.join("..", os.curdir))
 # Don't worry about the deployment credentials, those are fixed
 # You can use a different DB name if you want to
 LOCAL_MYSQL_USER = "root"
-LOCAL_MYSQL_USER_PASSWORD = ""
+LOCAL_MYSQL_USER_PASSWORD = "Flat2Pounds261"
 LOCAL_MYSQL_PORT = 3306
 LOCAL_MYSQL_DATABASE = "crumblessdb"
 
@@ -75,11 +75,12 @@ def get_businesses_by_id(business_map):
 
 
 def cuisine_search(cuisine):
-    query_sql = f"""SELECT * FROM businesses WHERE LOWER( categories ) LIKE '%%{cuisine.lower()}%%'"""
-    keys = ['id', 'name', 'address', 'city', 'state', 'postal_code', 'latitude',
-            'longitude', 'stars', 'review_count', 'attributes', 'categories', 'hours']
-    data = mysql_engine.query_selector(query_sql)
-    return json.dumps([dict(zip(keys, i)) for i in data])
+    business_sql = f"""SELECT DISTINCT id FROM businesses WHERE LOWER( categories ) LIKE '%%{cuisine.lower()}%%'"""
+    data = mysql_engine.query_selector(business_sql)
+    ids =[]
+    for row in data:
+        ids.append(row[0])
+    return ids
 
 
 def jaccard_sim(cat1, cat2):
@@ -100,7 +101,7 @@ def businesses_search():
 
 
 @app.route("/review/test/<string:query>")
-def review_test(query):
+def review_test(query, cuisine):
     # return json.dumps(get_businesses_by_id(sim.text_mining(query)))
     business_map = sim.text_mining(query)
     # return json.dumps(business_map)
@@ -124,7 +125,11 @@ def review_test(query):
 @app.route("/reviewsearch")
 def review_textmine():
     query = request.args.get("title")
-    business_map = sim.text_mining(query)
+    cuisine = request.args.get("cuisine")
+    cuisine_ids = None
+    if cuisine != "NONE":
+        cuisine_ids = cuisine_search(cuisine)
+    business_map = sim.text_mining(query, cuisine_ids)
     query_sql = f"""SELECT * FROM businesses WHERE id IN {tuple(list(business_map.keys())[:10])}"""
     keys = ['id', 'name', 'address', 'city', 'state', 'postal_code', 'latitude',
             'longitude', 'stars', 'review_count', 'categories', 'hours']
@@ -133,4 +138,4 @@ def review_textmine():
 
 
 if 'DB_NAME' not in os.environ:
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    app.run(debug=True, host="0.0.0.0", port=5001)
