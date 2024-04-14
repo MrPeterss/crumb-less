@@ -32,7 +32,6 @@ reviews_sql_query = f"""SELECT * FROM reviews"""
 reviews_data = mysql_engine.query_selector(reviews_sql_query)
 reviews = [Review(row[0], row[1], row[2], row[3], row[4], row[5])
            for row in reviews_data]
-sim = Similarity(reviews, [])
 
 businesses_sql_query = f"""SELECT * FROM businesses"""
 businesses_data = mysql_engine.query_selector(businesses_sql_query)
@@ -41,6 +40,7 @@ for row in businesses_data:
     businesses[row[0]] = Business(row[0], row[1], row[2], row[3], row[4],
                                   row[5], row[6], row[7], row[8], row[9], row[10], row[11])
 
+sim = Similarity(reviews, businesses)
 
 # Sample search, the LIKE operator in this case is hard-coded,
 # but if you decide to use SQLAlchemy ORM framework,
