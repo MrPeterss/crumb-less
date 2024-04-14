@@ -8,11 +8,6 @@ class Similarity:
     def __init__(self, reviews, businesses):
         self.reviews = reviews
         self.businesses = businesses
-
-        self.cuisinereviews = []
-        self.cuisinetfidf_vectorizer = TfidfVectorizer()
-        self.cuisinetfidf_reviews = None
-
         self.tfidf_vectorizer = TfidfVectorizer()
         self.tfidf_reviews = self.tfidf_vectorizer.fit_transform(
             [x.text for x in self.reviews])
@@ -26,10 +21,7 @@ class Similarity:
         # normalize the rows
         self.docs_compressed_normed = normalize(docs_compressed)
 
-    # def set_cuisine_reviews(self, cuisine):
-    #     self.
-
-    def text_mining(self, query):
+    def text_mining(self, query, cuisinelist):
         query_tfidf = self.tfidf_vectorizer.transform([query]).toarray()
         query_vec = normalize(
             np.dot(query_tfidf, self.words_compressed)).squeeze()
@@ -45,4 +37,8 @@ class Similarity:
         # order by similarity
         business_map = {k: v for k, v in sorted(
             business_map.items(), key=lambda item: item[1], reverse=True)}
-        return business_map
+        if cuisinelist is None:
+            return business_map
+        cuisine_businesses_map = {
+            k: v for k, v in business_map.items() if k in cuisinelist}
+        return cuisine_businesses_map

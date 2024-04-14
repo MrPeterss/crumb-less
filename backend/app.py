@@ -77,7 +77,7 @@ def get_businesses_by_id(business_map):
 def cuisine_search(cuisine):
     business_sql = f"""SELECT DISTINCT id FROM businesses WHERE LOWER( categories ) LIKE '%%{cuisine.lower()}%%'"""
     data = mysql_engine.query_selector(business_sql)
-    ids =[]
+    ids = []
     for row in data:
         ids.append(row[0])
     return ids
