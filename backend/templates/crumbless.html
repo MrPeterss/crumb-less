@@ -109,7 +109,7 @@
                 console.log()
             }
             document.getElementById("answer-box").innerHTML = ""
-            fetch("/reviewsearch?" + new URLSearchParams({ title: document.getElementById("filter-text-val").value, cuisine: cuisine }).toString())
+            fetch("/reviewsearch?" + new URLSearchParams({ title: document.getElementById("filter-text-val").value, cuisine: cuisine, diet: diet }).toString())
                 .then((response) => response.json())
                 .then((data) => data.forEach(row => {
                     let tempDiv = document.createElement("div")

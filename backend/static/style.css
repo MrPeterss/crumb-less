@@ -12,12 +12,13 @@
     right: 0;
     bottom: 0;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: start;
     flex-direction: column;
     background-color: #D3EEF4;
+    background-attachment: scroll;
 }
 
 h1 {
@@ -84,6 +85,7 @@ select.dropdown option {
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: fixed;
 }
 
 .input-box input {
@@ -99,6 +101,7 @@ select.dropdown option {
 .answer-box {
     width: 700px;
     margin-top: 50px;
+    background-color: #D3EEF4;
 }
 
 .bold {

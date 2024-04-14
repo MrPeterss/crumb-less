@@ -74,12 +74,22 @@ def get_businesses_by_id(business_map):
 # define a query object so we can keep passing the query into helpers)
 
 
-def cuisine_search(cuisine):
-    business_sql = f"""SELECT DISTINCT id FROM businesses WHERE LOWER( categories ) LIKE '%%{cuisine.lower()}%%'"""
-    data = mysql_engine.query_selector(business_sql)
-    ids = []
-    for row in data:
-        ids.append(row[0])
+def cuisine_diet_search(cuisine, diet):
+    data = None
+    if cuisine!="NONE" and diet!="NONE":
+        business_sql = f"""SELECT DISTINCT id FROM businesses WHERE LOWER( categories ) LIKE '%%{cuisine.lower()}%%' AND LOWER( categories ) LIKE '%%{diet.lower()}%%'"""
+        data = mysql_engine.query_selector(business_sql)
+    elif cuisine!="NONE":
+        business_sql = f"""SELECT DISTINCT id FROM businesses WHERE LOWER( categories ) LIKE '%%{cuisine.lower()}%%'"""
+        data = mysql_engine.query_selector(business_sql)
+    elif diet!="NONE":
+        business_sql = f"""SELECT DISTINCT id FROM businesses WHERE LOWER( categories ) LIKE '%%{diet.lower()}%%'"""
+        data = mysql_engine.query_selector(business_sql)
+    ids = None
+    if data != None:
+        ids =[]
+        for row in data:
+            ids.append(row[0])
     return ids
 
 
@@ -100,35 +110,12 @@ def businesses_search():
     return sql_search(text)
 
 
-@app.route("/review/test/<string:query>")
-def review_test(query, cuisine):
-    # return json.dumps(get_businesses_by_id(sim.text_mining(query)))
-    business_map = sim.text_mining(query)
-    # return json.dumps(business_map)
-    # for key in business_map:
-    #     if len(res) >= 10:
-    #         break
-    #     query_sql = f"""SELECT * FROM businesses WHERE id in '%%{business_map.keys()[:10]}%%'"""
-    #     keys = ['id', 'name', 'address', 'city', 'state', 'postal_code', 'latitude',
-    #             'longitude', 'stars', 'review_count', 'categories', 'hours']
-    #     data = mysql_engine.query_selector(query_sql)
-    #     print(type(data))
-    #     res.append(dict(zip(keys, i)) for i in data)
-
-    query_sql = f"""SELECT * FROM businesses WHERE id IN {tuple(list(business_map.keys())[:10])}"""
-    keys = ['id', 'name', 'address', 'city', 'state', 'postal_code', 'latitude',
-            'longitude', 'stars', 'review_count', 'categories', 'hours']
-    data = mysql_engine.query_selector(query_sql)
-    return json.dumps([dict(zip(keys, i)) for i in data])
-
-
 @app.route("/reviewsearch")
 def review_textmine():
     query = request.args.get("title")
     cuisine = request.args.get("cuisine")
-    cuisine_ids = None
-    if cuisine != "NONE":
-        cuisine_ids = cuisine_search(cuisine)
+    diet = request.args.get("diet")
+    cuisine_ids = cuisine_diet_search(cuisine, diet)
     business_map = sim.text_mining(query, cuisine_ids)
     query_sql = f"""SELECT * FROM businesses WHERE id IN {tuple(list(business_map.keys())[:10])}"""
     keys = ['id', 'name', 'address', 'city', 'state', 'postal_code', 'latitude',
