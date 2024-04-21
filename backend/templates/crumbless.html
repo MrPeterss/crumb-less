@@ -10,14 +10,19 @@
     <div class="full-body-container">
         <div class="top-text">
             <h1>Crumb-less</h1>
+            <h2>Tucson</h2>
 
             <div class="input-box" onclick="sendFocus()">
                 <img src="{{ url_for('static', filename='images/mag.png') }}" />
                 <input placeholder="Search for your Tucson cravings" id="filter-text-val">
             </div>
+            <h3>Optional Extra Inputs</h3>
+            <div class="fave-restaurant-box" onclick="sendFocus()">
+                <input placeholder="Enter your favorite Tucson restaurant" id="fave-restaurant-val">
+            </div>
             <div class="dropdown-container">
                 <select class="dropdown" name="cuisine" id="cuisine">
-                    <option value="" disabled selected>Select Cuisine</option>
+                    <option value="NONE">Select Cuisine</option>
                     <option value="American">American</option>
                     <option value="Chinese">Chinese</option>
                     <option value="French">French</option>
@@ -30,13 +35,13 @@
 
                 </select>
                 <select class="dropdown" name="budget" id="budget">
-                    <option value="" disabled selected>Select Budget</option>
+                    <option value="NONE">Select Budget</option>
                     <option value="$">$</option>
                     <option value="$$">$$</option>
                     <option value="$$">$$$</option>
                 </select>
                 <select class="dropdown" name="diet" id="diet">
-                    <option value="" disabled selected>Select Dietary Restriction</option>
+                    <option value="NONE">Select Dietary Restriction</option>
                     <option value="Gluten-Free">Gluten-Free</option>
                     <option value="Keto">Keto</option>
                     <option value="Paleo">Paleo</option>
@@ -63,15 +68,6 @@
             var cuisine = cuisine_dropdown.value
             var budget = budget_dropdown.value
             var diet = diet_dropdown.value
-            if (cuisine == "") {
-                cuisine = "NONE"
-            }
-            if (budget == "") {
-                budget = "NONE"
-            }
-            if (diet == "") {
-                diet = "NONE"
-            }
             filterText(cuisine, budget, diet);
         });
 
