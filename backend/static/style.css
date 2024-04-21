@@ -12,7 +12,7 @@
     bottom: 0;
     width: 100%;
     min-height: 100vh;
-    display: flex;
+    /* display: flex; */
     align-items: center;
     justify-content: start;
     flex-direction: column;
@@ -21,19 +21,23 @@
 }
 
 h1 {
-    margin-top: 50px;
+    /* margin-top: 50px; */
     font-size: 80px;
     font-family: 'DM Serif Display', serif;
     color: #C65D42;
-    vertical-align: middle;
 }
 
 h2 {
-    /* align-items: center; */
     font-size: 30px;
     font-family: 'DM Serif Display', serif;
     color: #DD7B50;
-    vertical-align: middle;
+}
+
+h3 {
+    margin-top: 20px;
+    font-size: 24px;
+    font-family: 'DM Serif Display', serif;
+    color: #DD7B50;
 }
 
 .input-box {
@@ -43,12 +47,42 @@ h2 {
     display: flex;
     align-items: center;
     padding: 12px;
-    width: 600px;
+    width: 800px;
 }
 
 .input-box img {
     height: 20px;
     width: 20px;
+}
+
+.input-box input {
+    width: 100%;
+    margin-left: 10px;
+    font-size: 24px;
+    border: none;
+    outline: 0;
+    background-color: #F5F5F5;
+
+}
+
+.fave-restaurant-box {
+    border: 2px solid #C65D42;
+    background-color: #F5F5F5;
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    width: 600px;
+}
+
+.fave-restaurant-box input {
+
+    width: 100%;
+    margin-left: 10px;
+    font-size: 16px;
+    border: none;
+    outline: 0;
+    background-color: #F5F5F5;
+
 }
 
 .dropdown-container {
@@ -129,7 +163,7 @@ select.dropdown option {
 
 .submit-button {
     padding: 8px;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 16px;
     background-color: #F5F5F5;
     border: 1px solid #DD7B50;
