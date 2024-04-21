@@ -23,7 +23,6 @@ class Similarity:
 
     def jaccard(self, business1, business2):
         # intersect over union
-        print("IN JACCARD!")
         cat1 = self.businesses[business1].categories
         cat2 = self.businesses[business2].categories
         cat1_tok = set(cat1.split(","))
@@ -51,9 +50,7 @@ class Similarity:
                 k: v for k, v in business_map.items() if k in valid_businesses}
             business_map = cuisine_businesses_map
         if favrestaurant_id == None:
-            print("FAVE RESTAURANT ID IS NONE????")
             return business_map
-        print("CreATED JAC DICT")
         jacc_sim_businesses = {}
         for k, v in business_map.items():
             jacc_sim_businesses[k] = self.jaccard(
