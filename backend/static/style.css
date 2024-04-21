@@ -12,7 +12,6 @@
     bottom: 0;
     width: 100%;
     min-height: 100vh;
-    /* display: flex; */
     align-items: center;
     justify-content: start;
     flex-direction: column;
@@ -20,27 +19,38 @@
     background-attachment: scroll;
 }
 
+.background-cactus {
+    background-image: url('image-url.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center bottom;
+}
+
 h1 {
-    /* margin-top: 50px; */
+    margin: 0px;
+    margin-top: 50px;
+    margin-bottom: 0px;
     font-size: 80px;
     font-family: 'DM Serif Display', serif;
     color: #C65D42;
 }
 
 h2 {
+    margin: 0px;
     font-size: 30px;
     font-family: 'DM Serif Display', serif;
     color: #DD7B50;
 }
 
 h3 {
-    margin-top: 20px;
-    font-size: 24px;
+    margin-top: 40px;
+    font-size: 20px;
     font-family: 'DM Serif Display', serif;
     color: #DD7B50;
 }
 
 .input-box {
+    margin-top: 65px;
     border-radius: 50px;
     border: 2px solid #C65D42;
     background-color: #F5F5F5;
@@ -75,7 +85,6 @@ h3 {
 }
 
 .fave-restaurant-box input {
-
     width: 100%;
     margin-left: 10px;
     font-size: 16px;
