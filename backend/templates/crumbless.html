@@ -12,12 +12,12 @@
             <h1>Crumb-less</h1>
             <h2>Tucson</h2>
 
-            <div class="input-box" onclick="sendFocus()">
+            <div class="input-box" onclick="sendFocusSearch()">
                 <img src="{{ url_for('static', filename='images/mag.png') }}" />
                 <input placeholder="Search for your Tucson cravings" id="filter-text-val">
             </div>
             <h3>Optional Extra Inputs</h3>
-            <div class="fave-restaurant-box" onclick="sendFocus()">
+            <div class="fave-restaurant-box" onclick="sendFocusFave()">
                 <input placeholder="Enter your favorite Tucson restaurant" id="fave-restaurant-val">
             </div>
             <div class="dropdown-container">
@@ -90,8 +90,11 @@
             </div>`
         }
 
-        function sendFocus() {
+        function sendFocusSearch() {
             document.getElementById('filter-text-val').focus()
+        }
+        function sendFocusFave() {
+            document.getElementById('fave-restaurant-val').focus()
         }
 
         function checkEnter(event) {
