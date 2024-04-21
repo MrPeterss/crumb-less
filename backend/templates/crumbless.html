@@ -13,11 +13,14 @@
             <h2>Tucson</h2>
             <div class="input-box" onclick="sendFocusSearch()">
                 <img src="{{ url_for('static', filename='images/mag.png') }}" />
-                <input placeholder="Search for your Tucson cravings (e.g. fancy date night)" id="filter-text-val">
+                <input placeholder="Search for your Tucson cravings (e.g. fancy date night)" id="filter-text-val"
+                    onkeyup="typingFilter()" onkeydown="checkEnter(event)">
+                <!-- onkeyup="filterText()" onkeydown="checkEnter(event)" -->
             </div>
             <h3>Optional Extra Inputs</h3>
             <div class="fave-restaurant-box" onclick="sendFocusFave()">
-                <input placeholder="Enter your favorite Tucson restaurant" id="fave-restaurant-val">
+                <input placeholder="Enter your favorite Tucson restaurant" id="fave-restaurant-val" onkeydown="
+                    checkEnter(event)">
             </div>
             <div class="dropdown-container">
                 <select class="dropdown" name="cuisine" id="cuisine">
@@ -30,8 +33,6 @@
                     <option value="Korean">Korean</option>
                     <option value="Mexican">Mexican</option>
                     <option value="Mediterranean">Mediterranean</option>
-
-
                 </select>
                 <select class="dropdown" name="budget" id="budget">
                     <option value="NONE">Select Budget</option>
@@ -71,6 +72,22 @@
             filterText(cuisine, budget, diet);
         });
 
+        function checkEnter(event) {
+            if (event.keyCode === 13) {
+                typingFilter()
+            }
+        }
+
+        /** Identifies the inputs in the dropdown and send that to FilterText*/
+        function typingFilter() {
+            var cuisine_dropdown = document.getElementById("cuisine");
+            var budget_dropdown = document.getElementById("budget");
+            var diet_dropdown = document.getElementById("diet");
+            var cuisine = cuisine_dropdown.value
+            var budget = budget_dropdown.value
+            var diet = diet_dropdown.value
+            filterText(cuisine, budget, diet);
+        }
 
         function answerBoxTemplate(name, address, stars, categories, postal_code) {
             const roundedPC = Math.round(Number(postal_code)).toString();
@@ -95,12 +112,6 @@
         }
         function sendFocusFave() {
             document.getElementById('fave-restaurant-val').focus()
-        }
-
-        function checkEnter(event) {
-            if (event.keyCode === 13) {
-                filterText()
-            }
         }
 
         function filterText(cuisine, budget, diet) {
