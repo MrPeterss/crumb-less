@@ -112,6 +112,7 @@
                 .then((data) => data.forEach(row => {
                     let tempDiv = document.createElement("div")
                     tempDiv.innerHTML = answerBoxTemplate(row.name, row.address, row.stars, row.categories, row.postal_code)
+                    console.log("row", row.similarity)
                     document.getElementById("answer-box").appendChild(tempDiv)
                 }));
         }

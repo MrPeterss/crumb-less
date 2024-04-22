@@ -121,7 +121,14 @@ def review_textmine():
     keys = ['id', 'name', 'address', 'city', 'state', 'postal_code', 'latitude',
             'longitude', 'stars', 'review_count', 'categories', 'hours']
     data = mysql_engine.query_selector(query_sql)
-    return json.dumps([dict(zip(keys, i)) for i in data])
+
+    response = []
+    for i in data:
+        dict_data = dict(zip(keys, i))
+        dict_data['similarity'] = business_map[dict_data['id']]
+        response.append(dict_data)
+
+    return json.dumps(response)
 
 
 if 'DB_NAME' not in os.environ:

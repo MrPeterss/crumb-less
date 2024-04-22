@@ -3,25 +3,28 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from scipy.sparse.linalg import svds
 from sklearn.preprocessing import normalize
 
-
 class Similarity:
     def __init__(self, reviews, businesses):
         self.reviews = reviews
         self.businesses = businesses
-        self.tfidf_vectorizer = TfidfVectorizer()
-        self.tfidf_reviews = self.tfidf_vectorizer.fit_transform(
-            [x.text for x in self.reviews])
+        self.tfidf_vectorizer = TfidfVectorizer(stop_words = 'english', max_df = 0.7, min_df = 75)
+        self.tfidf_reviews = self.tfidf_vectorizer.fit_transform([x.text for x in self.reviews])
+        # for each of the words in the vocabulary, check if its english
+        # if not, remove it from the vocabulary
+        self.tfidf_vectorizer.vocabulary_ = self.tfidf_vectorizer.vocabulary_
+
 
         docs_compressed, s, words_compressed = svds(self.tfidf_reviews, k=40)
         self.words_compressed = words_compressed.transpose()
 
-        word_to_index = self.tfidf_vectorizer.vocabulary_
-        index_to_word = {i: t for t, i in word_to_index.items()}
+        self.word_to_index = self.tfidf_vectorizer.vocabulary_
+        self.index_to_word = {i: t for t, i in self.word_to_index.items()}
 
         # normalize the rows
         self.docs_compressed_normed = normalize(docs_compressed)
 
     def text_mining(self, query, valid_businesses):
+
         query_tfidf = self.tfidf_vectorizer.transform([query]).toarray()
         query_vec = normalize(
             np.dot(query_tfidf, self.words_compressed)).squeeze()
