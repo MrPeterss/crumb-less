@@ -9,10 +9,11 @@ class Similarity:
         self.businesses = businesses
         self.tfidf_vectorizer = TfidfVectorizer(stop_words = 'english', max_df = 0.7, min_df = 75)
         self.tfidf_reviews = self.tfidf_vectorizer.fit_transform([x.text for x in self.reviews])
-        # for each of the words in the vocabulary, check if its english
-        # if not, remove it from the vocabulary
+        # remove these words from vocab
+        specific_stop_words = ["food", "good", "place", "tucson", "one"]
+        for s in specific_stop_words:
+            self.tfidf_vectorizer.stop_words_.add(s)
         self.tfidf_vectorizer.vocabulary_ = self.tfidf_vectorizer.vocabulary_
-
 
         docs_compressed, s, words_compressed = svds(self.tfidf_reviews, k=40)
         self.words_compressed = words_compressed.transpose()
@@ -22,6 +23,20 @@ class Similarity:
 
         # normalize the rows
         self.docs_compressed_normed = normalize(docs_compressed)
+
+        # This Code was run to find the words in each dimension and name them    
+
+        # for i in range(40):
+        #     print("Top words in dimension", i)
+        #     dimension_col = self.words_compressed[:,i].squeeze()
+        #     asort = np.argsort(-dimension_col)
+        #     print([self.index_to_word[i] for i in asort[:10]])
+        #     print()
+
+        # These are the names we produced for each dimension   
+  
+        self.dimension_names = ["General Quality", "Outstanding Experience", "Personal Favorites", "Quality & Value", "Pleasurable Visits", "Menu Variety", "Happy Hour", "Lunch Worth", "Casual Dining", "Relaxed Atmosphere", "Happy Hour Variety", "Meal Times", "Service & Waiting", "Service Recommendation", "Friendly Atmosphere", "Diverse Menu", "Local Flavors", "Quality Meals", "Casual Socializing", "Trendy Choices", "Sandwich Specialties", "Recommendation Quality", "Meal Experience", "Efficient Service", "Culinary Excellence", "Community Feel", "Evening Enjoyment", "Friendly Service", "Social Dining", "Cherished Moments", "Sushi Bar Experience", "Morning Delights", "Taco Bar Fun", "General Appreciation", "Casual Favorites", "Casual Comfort", "Local Favorites", "Authentic Cuisine", "Exceptional Service", "Satisfactory Dining"]
+
 
     def jaccard(self, business1, business2):
         # intersect over union
@@ -33,17 +48,23 @@ class Similarity:
 
     def text_mining(self, query, valid_businesses, favrestaurant_id):
         query_tfidf = self.tfidf_vectorizer.transform([query]).toarray()
-        query_vec = normalize(
-            np.dot(query_tfidf, self.words_compressed)).squeeze()
+        query_vec = normalize(np.dot(query_tfidf, self.words_compressed)).squeeze()
+
+        # find the dimension scores
+        adjusted_query_vec -= min(query_vec)
+        dimension_scores = {self.dimension_names[i]: adjusted_query_vec[i] / max(adjusted_query_vec) for i in range(40)}
+
+        # find the use SVD to rank the businesses
         sims = self.docs_compressed_normed.dot(query_vec)
         asort = np.argsort(-sims)
         business_map = {}
         for i in asort:
-            business_map[self.reviews[i].business_id] = business_map.get(
-                self.reviews[i].business_id, 0) + sims[i]
+            business_map[self.reviews[i].business_id] = business_map.get(self.reviews[i].business_id, 0) + sims[i]
+
         # averaging scores over review count
         for k, v in business_map.items():
             business_map[k] = v / self.businesses[k].review_count
+
         # order by similarity
         business_map = {k: v for k, v in sorted(
             business_map.items(), key=lambda item: item[1], reverse=True)}
@@ -51,8 +72,12 @@ class Similarity:
             cuisine_businesses_map = {
                 k: v for k, v in business_map.items() if k in valid_businesses}
             business_map = cuisine_businesses_map
+        
+        # check if user selected a fav restaurant
         if favrestaurant_id == None:
             return business_map
+        
+        # calculate jaccard similarity with fav restaurant, and add to the score
         jacc_sim_businesses = {}
         for k, v in business_map.items():
             jacc_sim_businesses[k] = self.jaccard(
