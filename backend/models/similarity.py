@@ -76,7 +76,7 @@ class Similarity:
             business_map = cuisine_businesses_map
         
         # check if user selected a fav restaurant
-        if favrestaurant_id == None:
+        if favrestaurant_id == None or len(favrestaurant_id) == 0:
             return business_map
         
         # calculate jaccard similarity with fav restaurant, and add to the score
