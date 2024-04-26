@@ -22,6 +22,7 @@
                 <input placeholder="Enter your favorite Tucson restaurant" id="fave-restaurant-val" onkeydown="
                     checkEnter(event)">
             </div>
+            <div id="no-fave-box"></div>
             <div class="dropdown-container">
                 <select class="dropdown" name="cuisine" id="cuisine">
                     <option value="NONE">Select Cuisine</option>
@@ -66,9 +67,10 @@
             var cuisine_dropdown = document.getElementById("cuisine");
             var budget_dropdown = document.getElementById("budget");
             var diet_dropdown = document.getElementById("diet");
-            var cuisine = cuisine_dropdown.value
-            var budget = budget_dropdown.value
-            var diet = diet_dropdown.value
+            var cuisine = cuisine_dropdown.value;
+            var budget = budget_dropdown.value;
+            var diet = diet_dropdown.value;
+            faveError();
             filterText(cuisine, budget, diet);
         });
 
@@ -83,9 +85,10 @@
             var cuisine_dropdown = document.getElementById("cuisine");
             var budget_dropdown = document.getElementById("budget");
             var diet_dropdown = document.getElementById("diet");
-            var cuisine = cuisine_dropdown.value
-            var budget = budget_dropdown.value
-            var diet = diet_dropdown.value
+            var cuisine = cuisine_dropdown.value;
+            var budget = budget_dropdown.value;
+            var diet = diet_dropdown.value;
+            faveError();
             filterText(cuisine, budget, diet);
         }
 
@@ -114,6 +117,26 @@
             document.getElementById('fave-restaurant-val').focus()
         }
 
+        function faveError() {
+            document.getElementById("no-fave-box").innerHTML = ""
+            name = document.getElementById("fave-restaurant-val").value
+            if (name != "") {
+                fetch("/favesearch?" + new URLSearchParams({ fave: name }).toString())
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log(data)
+                        if (data == "") {
+                            let tempDiv = document.createElement("div")
+                            tempDiv.innerHTML = `<p class='restaurant-desc'>Favorite restaurant not found in our database.</p>`
+                            document.getElementById("no-fave-box").appendChild(tempDiv)
+
+                        }
+                    })
+
+            };
+
+        };
+
         function filterText(cuisine, budget, diet) {
             document.getElementById("answer-box").innerHTML = ""
             fetch("/reviewsearch?" + new URLSearchParams({ title: document.getElementById("filter-text-val").value, cuisine: cuisine, diet: diet, favrestaurant: document.getElementById("fave-restaurant-val").value }).toString())
@@ -121,7 +144,6 @@
                 .then((data) => data.forEach(row => {
                     let tempDiv = document.createElement("div")
                     tempDiv.innerHTML = answerBoxTemplate(row.name, row.address, row.stars, row.categories, row.postal_code)
-                    console.log("row", row.similarity)
                     document.getElementById("answer-box").appendChild(tempDiv)
                 }));
         }

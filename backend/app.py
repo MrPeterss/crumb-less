@@ -110,6 +110,15 @@ def businesses_search():
     text = request.args.get("title")
     return sql_search(text)
 
+@app.route("/favesearch")
+def fave_search():
+    name = request.args.get("fave")
+    favrestaurant_id = get_business_by_id(name)
+    if favrestaurant_id is None or len(favrestaurant_id)==0:
+        return json.dumps("")
+    else:
+        return json.dumps("found")
+
 
 @app.route("/reviewsearch")
 def review_textmine():
