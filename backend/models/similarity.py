@@ -51,8 +51,10 @@ class Similarity:
         query_vec = normalize(np.dot(query_tfidf, self.words_compressed)).squeeze()
 
         # find the dimension scores
-        adjusted_query_vec -= min(query_vec)
+        adjusted_query_vec = query_vec - min(query_vec)
         dimension_scores = {self.dimension_names[i]: adjusted_query_vec[i] / max(adjusted_query_vec) for i in range(40)}
+
+        print(dimension_scores)
 
         # find the use SVD to rank the businesses
         sims = self.docs_compressed_normed.dot(query_vec)
