@@ -129,6 +129,8 @@ def review_textmine():
     favrestaurant_id = get_business_by_id(favrestaurant)
     cuisine_ids = cuisine_diet_search(cuisine, diet)
     business_map = sim.text_mining(query, cuisine_ids, favrestaurant_id)
+    if len(list(business_map.keys())[:10])==0:
+        return json.dumps("")
     query_sql = f"""SELECT * FROM businesses WHERE id IN {tuple(list(business_map.keys())[:10])}"""
     keys = ['id', 'name', 'address', 'city', 'state', 'postal_code', 'latitude',
             'longitude', 'stars', 'review_count', 'categories', 'hours']

@@ -141,11 +141,21 @@
             document.getElementById("answer-box").innerHTML = ""
             fetch("/reviewsearch?" + new URLSearchParams({ title: document.getElementById("filter-text-val").value, cuisine: cuisine, diet: diet, favrestaurant: document.getElementById("fave-restaurant-val").value }).toString())
                 .then((response) => response.json())
-                .then((data) => data.forEach(row => {
+                .then((data) => {
                     let tempDiv = document.createElement("div")
-                    tempDiv.innerHTML = answerBoxTemplate(row.name, row.address, row.stars, row.categories, row.postal_code)
-                    document.getElementById("answer-box").appendChild(tempDiv)
-                }));
+                    if (data == "") {
+                        let tempDiv = document.createElement("div")
+                        tempDiv.innerHTML = `<p class='h3'>No results found. Please try with different filters.</p>`
+                        document.getElementById("answer-box").appendChild(tempDiv)
+                    }
+                    else {
+                        data.forEach(row => {
+                            let tempDiv = document.createElement("div")
+                            tempDiv.innerHTML = answerBoxTemplate(row.name, row.address, row.stars, row.categories, row.postal_code)
+                            document.getElementById("answer-box").appendChild(tempDiv)
+                        })
+                    }
+                });
         }
 
     </script>
