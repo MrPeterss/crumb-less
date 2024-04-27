@@ -45,16 +45,17 @@ class Similarity:
         cat1_tok = set(cat1.split(","))
         cat2_tok = set(cat2.split(","))
         return len(cat1_tok.intersection(cat2_tok)) / len(cat1_tok.union(cat2_tok))
+    
+    def dimension_scores(self, query):
+        query_tfidf = self.tfidf_vectorizer.transform([query]).toarray()
+        query_vec = normalize(np.dot(query_tfidf, self.words_compressed)).squeeze()
+        adjusted_query_vec = query_vec - min(query_vec)
+        dimension_scores = {self.dimension_names[i]: (adjusted_query_vec[i] + 1) / (max(adjusted_query_vec) + 1) for i in range(40)}
+        return dimension_scores
 
     def text_mining(self, query, valid_businesses, favrestaurant_id):
         query_tfidf = self.tfidf_vectorizer.transform([query]).toarray()
         query_vec = normalize(np.dot(query_tfidf, self.words_compressed)).squeeze()
-
-        # find the dimension scores
-        adjusted_query_vec = query_vec - min(query_vec)
-        dimension_scores = {self.dimension_names[i]: adjusted_query_vec[i] / max(adjusted_query_vec) for i in range(40)}
-
-        print(dimension_scores)
 
         # find the use SVD to rank the businesses
         sims = self.docs_compressed_normed.dot(query_vec)

@@ -43,10 +43,20 @@ h2 {
 }
 
 h3 {
-    margin-top: 40px;
+    margin-top: 10px;
     font-size: 20px;
     font-family: 'DM Serif Display', serif;
     color: #DD7B50;
+}
+
+h4 {
+    font-family: sans-serif;
+    font-weight: normal;
+    color: black;
+    font-size: 14px;
+    height: 50px;
+    text-align: center;
+    width: 500px;
 }
 
 .input-box {
@@ -191,4 +201,14 @@ select.dropdown option {
 .submit-button:hover {
     background-color: #DD7B50;
     color: #F5F5F5;
+}
+
+#dimension-scores {
+    margin-top: 10px;
+    width: 500px;
+    height: 40px;
+    background-color: white;
+    border-radius: 5px;
+    border: 2px solid #C65D42;
+    overflow: hidden;
 }

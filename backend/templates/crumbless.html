@@ -1,4 +1,5 @@
 <!doctype html>
+<script src="https://d3js.org/d3.v5.min.js"></script>
 <title>Crumbless</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,6 +18,8 @@
                     onkeyup="typingFilter()" onkeydown="checkEnter(event)">
                 <!-- onkeyup="filterText()" onkeydown="checkEnter(event)" -->
             </div>
+            <div id="dimension-scores"></div>
+            <h4 id="dimension-text">Start typing words to see how much your query relates to certain categories</h4>
             <h3>Optional Extra Inputs</h3>
             <div class="fave-restaurant-box" onclick="sendFocusFave()">
                 <input placeholder="Enter your favorite Tucson restaurant" id="fave-restaurant-val" onkeydown="
@@ -24,7 +27,7 @@
             </div>
             <div id="no-fave-box"></div>
             <div class="dropdown-container">
-                <select class="dropdown" name="cuisine" id="cuisine">
+                <select class="dropdown" name="cuisine" id="cuisine" onchange="typingFilter()">
                     <option value="NONE">Select Cuisine</option>
                     <option value="American">American</option>
                     <option value="Chinese">Chinese</option>
@@ -35,14 +38,14 @@
                     <option value="Mexican">Mexican</option>
                     <option value="Mediterranean">Mediterranean</option>
                 </select>
-                <select class="dropdown" name="budget" id="budget">
+                <select class="dropdown" name="budget" id="budget" onchange="typingFilter()">
                     <option value="NONE">Select Budget</option>
                     <option value="1">$ (&lt;$10) </option>
                     <option value="2">$$ ($11-$30)</option>
                     <option value="3">$$$ ($31-$60)</option>
                     <option value="4">$$$$ (&gt;$61)</option>
                 </select>
-                <select class="dropdown" name="diet" id="diet">
+                <select class="dropdown" name="diet" id="diet" onchange="typingFilter()">
                     <option value="NONE">Select Dietary Restriction</option>
                     <option value="Gluten-Free">Gluten-Free</option>
                     <option value="Keto">Keto</option>
@@ -124,7 +127,6 @@
                 fetch("/favesearch?" + new URLSearchParams({ fave: name }).toString())
                     .then((response) => response.json())
                     .then((data) => {
-                        console.log(data)
                         if (data == "") {
                             let tempDiv = document.createElement("div")
                             tempDiv.innerHTML = `<p class='restaurant-desc'>Favorite restaurant not found in our database.</p>`
@@ -143,19 +145,97 @@
                 .then((response) => response.json())
                 .then((data) => {
                     let tempDiv = document.createElement("div")
-                    if (data == "") {
+                    if (data["businesses"] == "") {
                         let tempDiv = document.createElement("div")
                         tempDiv.innerHTML = `<p class='h3'>No results found. Please try with different filters.</p>`
                         document.getElementById("answer-box").appendChild(tempDiv)
                     }
                     else {
-                        data.forEach(row => {
+                        data["businesses"].forEach(row => {
                             let tempDiv = document.createElement("div")
                             tempDiv.innerHTML = answerBoxTemplate(row.name, row.address, row.stars, row.categories, row.postal_code)
                             document.getElementById("answer-box").appendChild(tempDiv)
                         })
                     }
+
+                    displayDimensionScores(data["query_dimensions"])
                 });
+        }
+
+        function sortDictByValue(dict) {
+            return Object.keys(dict)
+                .sort((a, b) => dict[b] - dict[a])
+                .reduce((acc, key) => {
+                    acc[key] = dict[key];
+                    return acc;
+                }, {});
+        }
+
+        let plotWindow = d3.select("#dimension-scores")
+        let svg = plotWindow.append("svg")
+            .attr("width", 500)
+            .attr("height", 50)
+
+        // use d3 to make a single bar with the dimension scores
+        function displayDimensionScores(scores) {
+
+            document.getElementById("dimension-text").innerHTML = "Hover over a rectangle to see what your query is related to!"
+
+            svg.selectAll("text").remove()
+            svg.selectAll("rect").remove()
+            // if there is nothing in scores, don't display anything
+            if (Object.keys(scores).length === 0) {
+                svg.append("text")
+                    .text("Keep typing words to get dimension scores")
+                    .attr("x", 125)
+                    .attr("y", 25)
+                
+                document.getElementById("dimension-text").innerHTML = ""
+                return
+            }
+
+            const width = 500
+
+            scores = sortDictByValue(scores)
+
+            // only keep first 5
+            scores = Object.fromEntries(Object.entries(scores).slice(0, 5))
+            // square all the scores
+            scores = Object.fromEntries(Object.entries(scores).map(([key, value]) => [key, value ** 5]))
+            var total = Object.values(scores).reduce((a, b) => a + b, 0)
+            scores = Object.fromEntries(Object.entries(scores).map(([key, value]) => [key, value / total * width]))
+
+            console.log("scores", scores)
+
+            var colors = ["#C65D42", "#FFFFFF", "#C65D42", "#FFFFFF", "#C65D42"]
+
+            // change scores from {dimension: width} to {dimension: [x, width]} where x is the starting position after the previous bar
+            scores = Object.fromEntries(Object.entries(scores).map(([key, value], i) => [key, [Object.values(scores).slice(0, i).reduce((a, b) => a + b, 0), value, colors[i], "Your query has to do with " + key + ". This topic is the " + ((i == 0) ? "most" : (i == 1) ? "2nd most" : (i == 2) ? "3rd most" : (i + 1) + "th most") + " important."]]))
+
+            svg.selectAll("rect")
+                .data(Object.values(scores))
+                .join("rect")
+                .attr("x", (d) => d[0])
+                .attr("y", 0)
+                .attr("width", (d) => d[1])
+                .attr("height", 40)
+                .attr("fill", (d) => d[2])
+                .attr("stroke", "black")
+                .attr("stroke-width", 0)
+                .on("mouseover", function (event, i, rects) {
+                    d3.select(this)
+                    .attr("stroke-width", 5)
+
+                    console.log(rects[i].__data__[3])
+                    document.getElementById("dimension-text").innerHTML = rects[i].__data__[3] + " This dimension represents " + Math.round(rects[i].__data__[1] / width * 100) + "% of the top five dimensions in your query. Results will be similar to this dimension."
+                })
+                .on("mouseout", function (event, d) {
+                    d3.select(this)
+                    .attr("stroke-width", 0)
+
+                    document.getElementById("dimension-text").innerHTML = "Hover over a rectangle to see what your query is related to!"
+                })
+            
         }
 
     </script>

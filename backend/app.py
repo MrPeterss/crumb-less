@@ -136,11 +136,20 @@ def review_textmine():
             'longitude', 'stars', 'review_count', 'categories', 'hours']
     data = mysql_engine.query_selector(query_sql)
 
-    response = []
+    response = {}
+
+    busi_data = []
     for i in data:
         dict_data = dict(zip(keys, i))
         dict_data['similarity'] = business_map[dict_data['id']]
-        response.append(dict_data)
+        busi_data.append(dict_data)
+
+    query_dimensions = sim.dimension_scores(query)
+    # if all in the list are 1
+    if all(value == 1 for value in query_dimensions.values()):
+        query_dimensions = {}    
+    response['query_dimensions'] = query_dimensions
+    response['businesses'] = busi_data
 
     return json.dumps(response)
 
