@@ -201,7 +201,7 @@
 
             console.log("scores", scores)
 
-            var colors = ["#C65D42", "#FFFFFF", "#C65D42", "#FFFFFF", "#C65D42"]
+            var colors = ["#DD7B50", "#FFFFFF", "#DD7B50", "#FFFFFF", "#DD7B50"]
 
             // change scores from {dimension: width} to {dimension: [x, width]} where x is the starting position after the previous bar
             scores = Object.fromEntries(Object.entries(scores).map(([key, value], i) => [key, [Object.values(scores).slice(0, i).reduce((a, b) => a + b, 0), value, colors[i], "Your query has to do with " + key + ". This topic is the " + ((i == 0) ? "most" : (i == 1) ? "2nd most" : (i == 2) ? "3rd most" : (i + 1) + "th most") + " important."]]))
