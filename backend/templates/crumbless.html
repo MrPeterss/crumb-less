@@ -48,9 +48,6 @@
                 <select class="dropdown" name="diet" id="diet" onchange="typingFilter()">
                     <option value="NONE">Select Dietary Restriction</option>
                     <option value="Gluten-Free">Gluten-Free</option>
-                    <option value="Keto">Keto</option>
-                    <option value="Paleo">Paleo</option>
-                    <option value="Pescetarian">Pescaterian</option>
                     <option value="Vegetarian">Vegetarian</option>
                     <option value="Vegan">Vegan</option>
                 </select>
@@ -141,20 +138,21 @@
                 .then((response) => response.json())
                 .then((data) => {
                     let tempDiv = document.createElement("div")
-                    if (data == "") {
+                    if (data["businesses"] == "" || data == "") {
                         let tempDiv = document.createElement("div")
                         tempDiv.innerHTML = `<p class='h3'>No results found. Please try with different filters.</p>`
                         document.getElementById("answer-box").appendChild(tempDiv)
                     }
-                    else {
-                        data.forEach(row => {
+                    else if (data != "" && data != null) {
+                        data["businesses"].forEach(row => {
                             let tempDiv = document.createElement("div")
                             tempDiv.innerHTML = answerBoxTemplate(row.name, row.address, row.stars, row.categories, row.postal_code)
                             document.getElementById("answer-box").appendChild(tempDiv)
                         })
+                        displayDimensionScores(data["query_dimensions"])
                     }
 
-                    displayDimensionScores(data["query_dimensions"])
+
                 });
         }
 
@@ -180,7 +178,7 @@
             svg.selectAll("text").remove()
             svg.selectAll("rect").remove()
             // if there is nothing in scores, don't display anything
-            if (Object.keys(scores).length === 0) {
+            if (Object == null || Object.keys(scores).length === 0) {
                 svg.append("text")
                     .text("Keep typing words to get dimension scores")
                     .attr("x", 125)
