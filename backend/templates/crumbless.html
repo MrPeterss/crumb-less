@@ -23,7 +23,7 @@
             <h3>Optional Extra Inputs</h3>
             <div class="fave-restaurant-box" onclick="sendFocusFave()">
                 <input placeholder="Enter your favorite Tucson restaurant" id="fave-restaurant-val" onkeydown="
-                    checkEnter(event)">
+                    checkName">
             </div>
             <div id="no-fave-box"></div>
             <div class="dropdown-container">
@@ -78,6 +78,22 @@
         function checkEnter(event) {
             if (event.keyCode === 13) {
                 typingFilter()
+            }
+        }
+
+        function checkName(event) {
+            if (event.keyCode === 13) {
+                var other_restaurant = document.getElementById("fave-restaurant-val").value;
+                console.log("other_restaurant", other_restaurant)
+                if (other_restaurant != "") {
+                    fetch("/name-search?" + new URLSearchParams({ name: other_restaurant }))
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log("event LOL")
+                        console.log("data", data)
+                    })
+                }
+                checkEnter(event)
             }
         }
 
@@ -233,6 +249,5 @@
                 })
 
         }
-
     </script>
 </body>

@@ -120,6 +120,14 @@ def fave_search():
         return json.dumps("found")
 
 
+@app.route("/name-search")
+def name_search():
+    '''Search for a business by name. Returns names of businesses whose name contains the query'''
+    name = request.args.get("name")
+    query_sql = f"""SELECT name FROM businesses WHERE LOWER( name ) LIKE '%%{name.lower()}%%' limit 10"""
+    data = mysql_engine.query_selector(query_sql)
+    return json.dumps([i[0] for i in data])
+
 @app.route("/reviewsearch")
 def review_textmine():
     query = request.args.get("title")
