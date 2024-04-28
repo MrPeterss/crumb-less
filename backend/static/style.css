@@ -2,7 +2,8 @@
     width: 100%;
     height: 100%;
     background-color: #D3EEF4;
-    background-attachment: fixed;}
+    background-attachment: fixed;
+}
 
 .full-body-container {
     top: 0;
@@ -220,10 +221,59 @@ select.dropdown option {
     width: 600px;
     background-color: white;
     border-radius: 5px;
+    display: hidden;
 }
 
 .hide {
     display: none;
+}
+
+.rating-container {
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.rating-label {
+    margin-right: 10px;
+    font-size: 16px;
+
+}
+
+.star-rating {
+    display: inline-block;
+    font-size: 16px;
+}
+
+.star-rating::before {
+    content: "★★★★★";
+    letter-spacing: 5px;
+    color: #C65D42;
+}
+
+.star-rating[data-rating="1"]::before {
+    content: "★☆☆☆☆";
+    color: #C65D42;
+}
+
+.star-rating[data-rating="2"]::before {
+    content: "★★☆☆☆";
+    color: #C65D42;
+}
+
+.star-rating[data-rating="3"]::before {
+    content: "★★★☆☆";
+    color: #C65D42;
+}
+
+.star-rating[data-rating="4"]::before {
+    content: "★★★★☆";
+    color: #C65D42;
+}
+
+.star-rating[data-rating="5"]::before {
+    content: "★★★★★";
+    color: #C65D42;
 }
 
 p {

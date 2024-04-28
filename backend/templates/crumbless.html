@@ -96,21 +96,21 @@
 
         function checkName(event) {
             var other_restaurant = document.getElementById("fave-restaurant-val").value;
-            if (other_restaurant != "") {
-                fetch("/name-search?" + new URLSearchParams({ name: other_restaurant }))
-                .then((response) => response.json())
-                .then((data) => {
-                    // remove children
-                    // add to the fav-search-res div
-                    document.querySelector(".fav-search-res").innerHTML = ""
-                    data.forEach(row => {
-                        let tempDiv = document.createElement("div")
-                        tempDiv.innerHTML = `<div class='restaurant
-                        -desc' onclick='clickrestname(event)'>${row}</div>`
-                        document.querySelector(".fav-search-res").appendChild(tempDiv)
-                    })
-                })
-            }
+            // if (other_restaurant != "") {
+            //     fetch("/name-search?" + new URLSearchParams({ name: other_restaurant }))
+            //     .then((response) => response.json())
+            //     .then((data) => {
+            //         // remove children
+            //         // add to the fav-search-res div
+            //         document.querySelector(".fav-search-res").innerHTML = ""
+            //         data.forEach(row => {
+            //             let tempDiv = document.createElement("div")
+            //             tempDiv.innerHTML = `<div class='restaurant
+            //             -desc' onclick='clickrestname(event)'>${row}</div>`
+            //             document.querySelector(".fav-search-res").appendChild(tempDiv)
+            //         })
+            //     })
+            // }
             typingFilter()
         }
 
@@ -136,7 +136,7 @@
             filterText(cuisine, diet);
         }
 
-        function answerBoxTemplate(name, address, stars, categories, postal_code) {
+        function answerBoxTemplate(name, address, stars, categories, postal_code, sim) {
             const roundedPC = Math.round(Number(postal_code)).toString();
             const cat = categories.replace(/^"(.*)"$/, '$1');
             cat_array = cat.split(",")
@@ -145,12 +145,18 @@
                 cat_array.splice(i, 1)
             }
             cat1 = cat_array.join(",")
+            console.log("apple" + sim)
             //`<div class=''style='border: 1px solid black; padding: 10px;margin-bottom: 20px;border-radius: 5px;'>
             return `<div class = "restaurant-card">
                 <h3 class='restaurant-name'>${name}</h3>
                 <p class='restaurant-desc'><strong>Address: </strong> ${address}, Tucson, AZ, ${roundedPC}</p>
                 <p class='restaurant-desc'><strong>Average Rating: </strong>${stars}/5</p>
                 <p class='restaurant-desc'><strong>Common Words to Describe the Restaurant: </strong> ${cat1}</p>
+                <div class="rating-container">
+                    <span class="rating-label"><strong>Similarity Rating:</strong></span>
+                    <div class="star-rating" data-rating=${sim}></div>
+                    </div>
+                </div>
             </div>`
         }
 
@@ -192,11 +198,23 @@
                         document.getElementById("answer-box").appendChild(tempDiv)
                     }
                     else if (data != "" && data != null) {
-                        data["businesses"].forEach(row => {
+                        for (let i = 0; i < data["businesses"].length; i++) {
                             let tempDiv = document.createElement("div")
-                            tempDiv.innerHTML = answerBoxTemplate(row.name, row.address, row.stars, row.categories, row.postal_code)
+                            let row = data["businesses"][i]
+                            console.log(row.categories)
+                            let sim = parseInt((data["sim_score"][i][1] / data["sim_score"][0][1]) * 5)
+                            console.log(data["sim_score"][i][1])
+                            console.log(data["sim_score"][0][1])
+                            tempDiv.innerHTML = answerBoxTemplate(row.name, row.address, row.stars, row.categories, row.postal_code, sim)
                             document.getElementById("answer-box").appendChild(tempDiv)
-                        })
+                        }
+                        // data["businesses"].forEach(row => {
+
+                        //     console.log(row)
+                        //     let tempDiv = document.createElement("div")
+                        //     tempDiv.innerHTML = answerBoxTemplate(row.name, row.address, row.stars, row.categories, row.postal_code)
+                        //     document.getElementById("answer-box").appendChild(tempDiv)
+                        // })
                         displayDimensionScores(data["query_dimensions"])
                     }
 

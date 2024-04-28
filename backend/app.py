@@ -15,7 +15,7 @@ os.environ['ROOT_PATH'] = os.path.abspath(os.path.join("..", os.curdir))
 # Don't worry about the deployment credentials, those are fixed
 # You can use a different DB name if you want to
 LOCAL_MYSQL_USER = "root"
-LOCAL_MYSQL_USER_PASSWORD = ""
+LOCAL_MYSQL_USER_PASSWORD = "Flat2Pounds261"
 LOCAL_MYSQL_PORT = 3306
 LOCAL_MYSQL_DATABASE = "crumblessdb"
 
@@ -153,10 +153,10 @@ def review_textmine():
         busi_data.append(dict_data)
 
     query_dimensions = sim.dimension_scores(query)
-    # if all in the list are 1
     if all(value == 1 for value in query_dimensions.values()):
         query_dimensions = {}    
     response['query_dimensions'] = query_dimensions
+    response['sim_score']= list(business_map.items())[:10]
     response['businesses'] = busi_data
 
     return json.dumps(response)
