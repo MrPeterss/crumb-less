@@ -15,15 +15,16 @@
             <div class="input-box" onclick="sendFocusSearch()">
                 <img src="{{ url_for('static', filename='images/mag.png') }}" />
                 <input placeholder="Search for your Tucson cravings (e.g. fancy date night)" id="filter-text-val"
-                    onkeyup="typingFilter()" onkeydown="checkEnter(event)">
+                    onkeyup="typingFilter()">
                 <!-- onkeyup="filterText()" onkeydown="checkEnter(event)" -->
             </div>
             <div id="dimension-scores"></div>
             <h4 id="dimension-text">Start typing words to see how much your query relates to certain categories</h4>
             <h3>Optional Extra Inputs</h3>
             <div class="fave-restaurant-box" onclick="sendFocusFave()">
-                <input placeholder="Enter your favorite Tucson restaurant" id="fave-restaurant-val" onkeydown="
-                    checkName">
+                <input placeholder="Enter your favorite Tucson restaurant" id="fave-restaurant-val" onkeyup="
+                    checkName(event)">
+                <div class="fav-search-res"></div>
             </div>
             <div id="no-fave-box"></div>
             <div class="dropdown-container">
@@ -62,6 +63,19 @@
 
     <script>
 
+        document.getElementById("fave-restaurant-val").addEventListener("focusout", (event) => {
+            // 0.5 seconds after the focusout
+            setTimeout(() => {
+                document.querySelector(".fav-search-res").classList.add("hide");
+            }, 100);
+        });
+
+        document.getElementById("fave-restaurant-val").addEventListener("focusin", (event) => {
+            // remove class "hide"
+            document.querySelector(".fav-search-res").classList.remove("hide");
+        });
+
+
         document.getElementById("submit").addEventListener("submit", function (event) {
             event.preventDefault(); // Prevent the form from submitting
             var cuisine_dropdown = document.getElementById("cuisine");
@@ -79,19 +93,35 @@
         }
 
         function checkName(event) {
-            if (event.keyCode === 13) {
-                var other_restaurant = document.getElementById("fave-restaurant-val").value;
-                console.log("other_restaurant", other_restaurant)
-                if (other_restaurant != "") {
-                    fetch("/name-search?" + new URLSearchParams({ name: other_restaurant }))
-                    .then((response) => response.json())
-                    .then((data) => {
-                        console.log("event LOL")
-                        console.log("data", data)
+            var other_restaurant = document.getElementById("fave-restaurant-val").value;
+            if (other_restaurant != "") {
+                fetch("/name-search?" + new URLSearchParams({ name: other_restaurant }))
+                .then((response) => response.json())
+                .then((data) => {
+                    // remove children
+                    // add to the fav-search-res div
+                    document.querySelector(".fav-search-res").innerHTML = ""
+                    data.forEach(row => {
+                        let tempDiv = document.createElement("div")
+                        tempDiv.innerHTML = `<div class='restaurant
+                        -desc' onclick='clickrestname(event)'>${row}</div>`
+                        document.querySelector(".fav-search-res").appendChild(tempDiv)
                     })
-                }
-                checkEnter(event)
+                })
             }
+            typingFilter()
+        }
+
+        function clickrestname(event) {
+            document.getElementById("fave-restaurant-val").value = event.target.innerHTML
+            typingFilter()
+            // run 0.5 seconds after the click
+            setTimeout(() => {
+                // remove focus from the input
+                document.getElementById("fave-restaurant-val").blur()
+                // add class "hide"
+                document.querySelector(".fav-search-res").classList.add("hide");
+            }, 100);
         }
 
         /** Identifies the inputs in the dropdown and send that to FilterText*/
