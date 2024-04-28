@@ -207,8 +207,8 @@ select.dropdown option {
     margin-top: 10px;
     width: 500px;
     height: 40px;
-    background-color: white;
+    background-color: #DD7B50;
     border-radius: 5px;
-    border: 2px solid #C65D42;
+    border: 2px solid #DD7B50;
     overflow: hidden;
 }
