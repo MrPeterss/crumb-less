@@ -38,13 +38,13 @@
                     <option value="Mexican">Mexican</option>
                     <option value="Mediterranean">Mediterranean</option>
                 </select>
-                <select class="dropdown" name="budget" id="budget" onchange="typingFilter()">
+                <!-- <select class="dropdown" name="budget" id="budget" onchange="typingFilter()">
                     <option value="NONE">Select Budget</option>
                     <option value="1">$ (&lt;$10) </option>
                     <option value="2">$$ ($11-$30)</option>
                     <option value="3">$$$ ($31-$60)</option>
                     <option value="4">$$$$ (&gt;$61)</option>
-                </select>
+                </select> -->
                 <select class="dropdown" name="diet" id="diet" onchange="typingFilter()">
                     <option value="NONE">Select Dietary Restriction</option>
                     <option value="Gluten-Free">Gluten-Free</option>
@@ -68,13 +68,11 @@
         document.getElementById("submit").addEventListener("submit", function (event) {
             event.preventDefault(); // Prevent the form from submitting
             var cuisine_dropdown = document.getElementById("cuisine");
-            var budget_dropdown = document.getElementById("budget");
             var diet_dropdown = document.getElementById("diet");
             var cuisine = cuisine_dropdown.value;
-            var budget = budget_dropdown.value;
             var diet = diet_dropdown.value;
             faveError();
-            filterText(cuisine, budget, diet);
+            filterText(cuisine, diet);
         });
 
         function checkEnter(event) {
@@ -86,13 +84,11 @@
         /** Identifies the inputs in the dropdown and send that to FilterText*/
         function typingFilter() {
             var cuisine_dropdown = document.getElementById("cuisine");
-            var budget_dropdown = document.getElementById("budget");
             var diet_dropdown = document.getElementById("diet");
             var cuisine = cuisine_dropdown.value;
-            var budget = budget_dropdown.value;
             var diet = diet_dropdown.value;
             faveError();
-            filterText(cuisine, budget, diet);
+            filterText(cuisine, diet);
         }
 
         function answerBoxTemplate(name, address, stars, categories, postal_code) {
@@ -139,19 +135,19 @@
 
         };
 
-        function filterText(cuisine, budget, diet) {
+        function filterText(cuisine, diet) {
             document.getElementById("answer-box").innerHTML = ""
             fetch("/reviewsearch?" + new URLSearchParams({ title: document.getElementById("filter-text-val").value, cuisine: cuisine, diet: diet, favrestaurant: document.getElementById("fave-restaurant-val").value }).toString())
                 .then((response) => response.json())
                 .then((data) => {
                     let tempDiv = document.createElement("div")
-                    if (data["businesses"] == "") {
+                    if (data == "") {
                         let tempDiv = document.createElement("div")
                         tempDiv.innerHTML = `<p class='h3'>No results found. Please try with different filters.</p>`
                         document.getElementById("answer-box").appendChild(tempDiv)
                     }
                     else {
-                        data["businesses"].forEach(row => {
+                        data.forEach(row => {
                             let tempDiv = document.createElement("div")
                             tempDiv.innerHTML = answerBoxTemplate(row.name, row.address, row.stars, row.categories, row.postal_code)
                             document.getElementById("answer-box").appendChild(tempDiv)
@@ -189,7 +185,7 @@
                     .text("Keep typing words to get dimension scores")
                     .attr("x", 125)
                     .attr("y", 25)
-                
+
                 document.getElementById("dimension-text").innerHTML = ""
                 return
             }
@@ -224,18 +220,18 @@
                 .attr("stroke-width", 0)
                 .on("mouseover", function (event, i, rects) {
                     d3.select(this)
-                    .attr("stroke-width", 5)
+                        .attr("stroke-width", 5)
 
                     console.log(rects[i].__data__[3])
                     document.getElementById("dimension-text").innerHTML = rects[i].__data__[3] + " This dimension represents " + Math.round(rects[i].__data__[1] / width * 100) + "% of the top five dimensions in your query. Results will be similar to this dimension."
                 })
                 .on("mouseout", function (event, d) {
                     d3.select(this)
-                    .attr("stroke-width", 0)
+                        .attr("stroke-width", 0)
 
                     document.getElementById("dimension-text").innerHTML = "Hover over a rectangle to see what your query is related to!"
                 })
-            
+
         }
 
     </script>
