@@ -276,7 +276,7 @@ select.dropdown option {
     color: #C65D42;
 }
 
-p {
+.dim-text {
     width: 700px;
     text-align: center;
     /* white-space: nowrap;
