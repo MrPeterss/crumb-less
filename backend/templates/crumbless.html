@@ -146,7 +146,6 @@
                 cat_array.splice(i, 1)
             }
             cat1 = cat_array.join(",")
-            console.log("apple" + sim)
             //`<div class=''style='border: 1px solid black; padding: 10px;margin-bottom: 20px;border-radius: 5px;'>
             return `<div class = "restaurant-card">
                 <h3 class='restaurant-name'>${name}</h3>
@@ -192,20 +191,24 @@
             fetch("/reviewsearch?" + new URLSearchParams({ title: document.getElementById("filter-text-val").value, cuisine: cuisine, diet: diet, favrestaurant: document.getElementById("fave-restaurant-val").value }).toString())
                 .then((response) => response.json())
                 .then((data) => {
+
+
+                    var sum = data["sim_score"].reduce((accumulator, currentValue) => {
+                        return accumulator + currentValue[1]
+                    }, 0);
+
                     let tempDiv = document.createElement("div")
-                    if (data["businesses"] == "" || data == "") {
+                    if (sum == 0) {
                         let tempDiv = document.createElement("div")
-                        tempDiv.innerHTML = `<p class='h3'>No results found. Please try with different filters.</p>`
+                        tempDiv.innerHTML = `<p class='h3'>Your query doesn't match any of our restaurants. Please try a different one :(</p>`
+                        tempDiv.style = "text-align: center; width: 100%;"
                         document.getElementById("answer-box").appendChild(tempDiv)
                     }
-                    else if (data != "" && data != null) {
+                    if (data != "" && data != null) {
                         for (let i = 0; i < data["businesses"].length; i++) {
                             let tempDiv = document.createElement("div")
                             let row = data["businesses"][i]
-                            console.log(row.categories)
                             let sim = parseInt((data["sim_score"][i][1] / data["sim_score"][0][1]) * 5)
-                            console.log(data["sim_score"][i][1])
-                            console.log(data["sim_score"][0][1])
                             tempDiv.innerHTML = answerBoxTemplate(row.name, row.address, row.stars, row.categories, row.postal_code, sim)
                             document.getElementById("answer-box").appendChild(tempDiv)
                         }
@@ -266,8 +269,6 @@
             var total = Object.values(scores).reduce((a, b) => a + b, 0)
             scores = Object.fromEntries(Object.entries(scores).map(([key, value]) => [key, value / total * width]))
 
-            console.log("scores", scores)
-
             var colors = ["#DD7B50", "#FFFFFF", "#DD7B50", "#FFFFFF", "#DD7B50"]
 
             // change scores from {dimension: width} to {dimension: [x, width]} where x is the starting position after the previous bar
@@ -287,7 +288,6 @@
                     d3.select(this)
                         .attr("stroke-width", 5)
 
-                    console.log(rects[i].__data__[3])
                     document.getElementById("dimension-text").innerHTML = rects[i].__data__[3] + " This dimension represents " + Math.round(rects[i].__data__[1] / width * 100) + "% of the top five dimensions in your query. Results will be similar to this dimension."
                 })
                 .on("mouseout", function (event, d) {
