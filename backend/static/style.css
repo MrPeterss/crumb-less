@@ -279,6 +279,7 @@ select.dropdown option {
 .dim-text {
     width: 700px;
     text-align: center;
+    height: 50px;
     /* white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis; */
