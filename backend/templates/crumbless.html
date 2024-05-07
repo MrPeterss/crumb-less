@@ -25,8 +25,7 @@
             <h4></h4>
             <h3>Optional Extra Inputs</h3>
             <div class="fave-restaurant-box" onclick="sendFocusFave()">
-                <input placeholder="Enter your favorite Tucson restaurant" id="fave-restaurant-val" onkeyup="
-                    checkName(event)">
+                <input placeholder="Enter your favorite Tucson restaurant" id="fave-restaurant-val">
                 <div class="fav-search-res"></div>
             </div>
             <div id="no-fave-box"></div>
@@ -146,7 +145,6 @@
                 cat_array.splice(i, 1)
             }
             cat1 = cat_array.join(",")
-            console.log("apple" + sim)
             //`<div class=''style='border: 1px solid black; padding: 10px;margin-bottom: 20px;border-radius: 5px;'>
             return `<div class = "restaurant-card">
                 <h3 class='restaurant-name'>${name}</h3>
