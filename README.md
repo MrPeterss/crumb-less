@@ -25,3 +25,31 @@ Welcome to Crumbless, an innovative web application designed to help you discove
 - **[Peter Bidoshi](https://github.com/MrPeterss)**
 - **[Sophie Meng](https://github.com/smeng3408)**
 - **[Teddy Siker](https://github.com/sikernisky)**
+
+## Deployment
+
+To deploy this application, follow these steps:
+
+1. Ensure you have Python 3.8 or higher installed on your system.
+2. Clone the repository to your local machine.
+3. Navigate to the project directory in your terminal.
+4. Install the required dependencies using `pip install -r requirements.txt`.
+5. Set up your local MySQL database and ensure it is running.
+6. Update the `LOCAL_MYSQL_USER`, `LOCAL_MYSQL_USER_PASSWORD`, `LOCAL_MYSQL_PORT`, and `LOCAL_MYSQL_DATABASE` variables in `app.py` with your database credentials.
+7. Run `python app.py` to start the Flask application.
+8. The application will be available at `http://localhost:5001/`.
+
+## License
+
+Distributed under the MIT License.
+
+## Contact
+
+### Peter Bidoshi
+
+- Website: [peterbidoshi.com](https://peterbidoshi.com)
+- GitHub: [MrPeterss](https://github.com/mrpeterss)
+- LinkedIn: [Peter Bidoshi](https://www.linkedin.com/in/bidoshi/)
+- Email: [pjb294@cornell.edu](mailto:pjb294@cornell.edu)
+
+Project Link: [https://github.com/MrPeterss/crumb-less/](https://github.com/MrPeterss/crumb-less/)
