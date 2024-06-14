@@ -26,9 +26,9 @@ Welcome to Crumbless, an innovative web application designed to help you discove
 - **[Sophie Meng](https://github.com/smeng3408)**
 - **[Teddy Siker](https://github.com/sikernisky)**
 
-## Deployment
+## Local Deployment
 
-To deploy this application, follow these steps:
+To run this application locally, follow these steps:
 
 1. Ensure you have Python 3.8 or higher installed on your system.
 2. Clone the repository to your local machine.
