@@ -21,7 +21,7 @@ Welcome to Crumbless, an innovative web application designed to help you discove
 
 ## Team Members
 
-- **[Emily Hu](https://github.com/emilyhu8)
-- **[Peter Bidoshi](https://github.com/MrPeterss)
-- **[Sophie Meng](https://github.com/smeng3408)
-- **[Teddy Siker](https://github.com/sikernisky)
+- **[Emily Hu](https://github.com/emilyhu8)**
+- **[Peter Bidoshi](https://github.com/MrPeterss)**
+- **[Sophie Meng](https://github.com/smeng3408)**
+- **[Teddy Siker](https://github.com/sikernisky)**
