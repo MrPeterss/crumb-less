@@ -10,7 +10,7 @@ COPY requirements.txt $CONTAINER_HOME/requirements.txt
 RUN pip install --no-cache-dir -r $CONTAINER_HOME/requirements.txt
 
 # Copy application files
-COPY app.py models.py routes.py init.json $CONTAINER_HOME/
+COPY app.py routes.py init.json $CONTAINER_HOME/
 COPY models/ $CONTAINER_HOME/models/
 COPY helpers/ $CONTAINER_HOME/helpers/
 COPY static/ $CONTAINER_HOME/static/

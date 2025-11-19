@@ -2,7 +2,6 @@ import json
 import os
 from flask import Flask
 from flask_cors import CORS
-from models import db
 from helpers.MySQLDatabaseHandler import MySQLDatabaseHandler
 from routes import register_routes, initialize_data
 
@@ -20,23 +19,12 @@ LOCAL_MYSQL_DATABASE = "crumblessdb"
 app = Flask(__name__)
 CORS(app)
 
-# Configure SQLite database - using 3 slashes for relative path
-# Note: This project uses MySQL, but we include SQLite config for template compatibility
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-# Initialize database with app
-db.init_app(app)
-
 # Register routes
 register_routes(app)
 
 # Function to initialize database and data
 def init_db():
     with app.app_context():
-        # Create all tables (for SQLite, though project uses MySQL)
-        db.create_all()
-        
         # Initialize MySQL connection
         mysql_engine = MySQLDatabaseHandler(
             LOCAL_MYSQL_USER, LOCAL_MYSQL_USER_PASSWORD, LOCAL_MYSQL_PORT, LOCAL_MYSQL_DATABASE)
