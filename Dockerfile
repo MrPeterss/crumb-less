@@ -17,4 +17,4 @@ COPY templates/ $CONTAINER_HOME/templates/
 COPY yelp_tucson_food_data_10MB.csv $CONTAINER_HOME/
 
 # Run the Flask application using gunicorn
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:5000"]
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:5000", "--access-logfile", "-"]
