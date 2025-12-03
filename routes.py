@@ -77,7 +77,7 @@ def cuisine_diet_search(cuisine, diet):
     elif diet != "NONE":
         query = query.filter(Business.categories.ilike(f'%{diet}%'))
     else:
-        return []
+        return None  # Return None when no filter is applied
     
     results = query.distinct().all()
     return [b.id for b in results]
