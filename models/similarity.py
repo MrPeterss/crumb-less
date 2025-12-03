@@ -7,12 +7,13 @@ class Similarity:
     def __init__(self, reviews, businesses):
         self.reviews = reviews
         self.businesses = businesses
-        # Combine English stop words with specific stop words
-        from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
-        specific_stop_words = ["food", "good", "place", "tucson", "one"]
-        custom_stop_words = set(ENGLISH_STOP_WORDS) | set(specific_stop_words)
-        self.tfidf_vectorizer = TfidfVectorizer(stop_words=custom_stop_words, max_df=0.7, min_df=75)
+        self.tfidf_vectorizer = TfidfVectorizer(stop_words = 'english', max_df = 0.7, min_df = 75)
         self.tfidf_reviews = self.tfidf_vectorizer.fit_transform([x.text for x in self.reviews])
+        # remove these words from vocab
+        specific_stop_words = ["food", "good", "place", "tucson", "one"]
+        for s in specific_stop_words:
+            self.tfidf_vectorizer.stop_words_.add(s)
+        self.tfidf_vectorizer.vocabulary_ = self.tfidf_vectorizer.vocabulary_
 
         docs_compressed, s, words_compressed = svds(self.tfidf_reviews, k=40)
         self.words_compressed = words_compressed.transpose()
